@@ -1,0 +1,78 @@
+MACRO
+
+regjacknife x.1-x.p y alfa
+
+mconstant alfa n i j k ybar m q j2 k1 Z k2 koefb0 koefb1 koefb2 se0 se1 se2 se_b0 se_b1 se_b2
+mcolumn x.1-x.p xj.1-xj.p y r r2 yj beta koefb b0 b1 b2 b00 b10 b20 beta0 beta1 beta2
+mmatrix mxj mx mxt mxtx mixtx my mxty mb
+
+let n=count(y)
+let m=n-1
+
+set r
+1( 1:1/1)m
+End.
+
+set r2
+1( 1:1/1)n
+End.
+
+let j2=0
+let q=p+1
+
+do i=1:n
+copy x.1-x.p mxj
+copy mxj xj.1-xj.p
+delete i xj.1-xj.p
+  let yj=y
+  delete i yj
+copy r xj.1-xj.p mx
+copy yj my
+transpose mx mxt
+multiply mxt mx mxtx
+invers mxtx mixtx
+multiply mxt my mxty
+multiply mixtx mxty mb
+copy mb beta
+  let b0(i)=beta(1)
+  let b1(i)=beta(2)
+  let b2(i)=beta(3)
+	do j=1:q
+	  let koefb(j2+j)=beta(j)
+	enddo
+  let j2=count(koefb)
+enddo
+let koefb0=mean(b0)
+let koefb1=mean(b1)
+let koefb2=mean(b2)
+
+#se b0
+let se0=0
+	do i=1:n
+	 let se0=se0+((b0(i)-koefb0)^2)
+enddo
+let z=(n-1)/n
+let se_b0=sqrt(z*se0)
+
+#se b1
+let se1=0
+	do i=1:n
+	 let se1=se1+((b1(i)-koefb1)^2)
+enddo
+let z=(n-1)/n
+let se_b1=sqrt(z*se1)
+
+#se b2
+let se2=0
+	do i=1:n
+	 let se2=se2+((b2(i)-koefb2)^2)
+enddo
+let z=(n-1)/n
+let se_b2=sqrt(z*se2)
+
+
+print r xj.1-xj.p yj beta koefb p r2 b0 b1 b2 koefb0 koefb1 koefb2
+
+NOTE STANDARD ERROR ESTIMASI JACKKNIFE
+print se_b0 se_b1 se_b2
+endmacro

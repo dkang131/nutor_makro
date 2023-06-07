@@ -1,0 +1,32 @@
+macro 
+regbb y x.1-x.p
+mconstant n i b low_b0 up_b0 low_b1 up_b1 low_b2 up_b2
+mcolumn x.1-x.p y yy yhat e ee b0 b1 b2 beta b0_boot b1_boot b2_boot
+
+let n=count(y)
+let b=10
+regr y 2 x.1-x.p;
+resid e;
+fits yhat.
+do i=1:b
+    sample n e ee;
+    replacement.
+    let yy=yhat+ee
+    regr yy 2 x.1-x.p;
+    coef beta.
+    let b0(i)=beta(1)
+    let b1(i)=beta(2)
+    let b2(i)=beta(3)
+enddo
+
+let b0_boot=mean(b0)
+let b1_boot=mean(b1)
+let b2_boot=mean(b2)
+sort b2 b2
+sort b1 b1
+sort b0 b0
+
+print b0_boot
+print b1_boot
+print b2_boot
+endmacro

@@ -1,0 +1,73 @@
+macro 
+
+jacknife x 
+
+mconstant n m i j k jumlah rata_J rata_0 bias A SDEV var_0 mvar_j bias1 b c sum sum1 sum2 p
+mcolumn x xj mj xk mk rata
+
+let n = count(x)
+
+
+#ratarata
+LET JUMLAH=0
+DO I=1:N
+LET JUMLAH=JUMLAH+X(I)
+ENDDO
+LET rata_0=JUMLAH/N
+
+do i =1:n
+let xj = x
+delete i xj
+let m=count(xj)
+	let sum=0
+	do j=1:m
+	let sum=sum+xj(j)
+	enddo
+	let rata(i)=sum/m
+let mj(i)=rata(i)
+enddo
+
+let sum1=0
+do j=1:n
+	let sum1=sum1+mj(j)
+enddo
+let rata_J = sum1/n
+
+let bias = (rata_J-rata_0)
+
+print mj rata_0 rata_J bias
+
+#varian
+LET A=0
+DO J=1:N
+LET A=A+((mj(J)-rata_J)^2)
+ENDDO
+LET SDEV=SQRT(A/(N-1))
+LET var_0=(SDEV)^2
+
+do i=1:n
+let xk = mj
+delete i xk
+let p=count(xk)
+	let b=0
+	do j=1:p
+	let b=b+xk(j)
+	enddo
+	let c=0
+	do k=1:p
+	let c=c+((xk(k)-(b/p))^2)
+	enddo	
+let mk(i)=c/(p-1)
+enddo
+
+let sum2=0
+do j=1:n
+	let sum2=sum2+mk(j)
+enddo
+let mvar_j=sum2/n
+
+let bias1 = abs(mvar_j - var_0)
+
+print mk var_0 mvar_j bias1
+
+endmacro
