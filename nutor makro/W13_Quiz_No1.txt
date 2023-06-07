@@ -1,0 +1,67 @@
+macro
+
+paired_t x y mu0 alpha
+
+mconstant mu0 alpha n jumlah dbar a i sd t ttab alpha1 df p pvalue BB BA
+mcolumn x y
+
+let n = count(x)
+let alpha1 = 1-(alpha/2)
+
+note Hypotesis:
+note H0 : mu0 = 0
+note H1 : mu0 <> 0
+
+#dbar
+let jumlah = 0
+do i = 1:n
+let jumlah = jumlah+(x(i)-y(i))
+enddo
+let dbar = jumlah/n
+
+#stdev
+let a = 0
+do i = 1:n
+let a = a+(x(i)-y(i)-dbar)^2
+enddo
+let sd = sqrt(a/(n-1))
+
+let t = (dbar-mu0)/(sd/sqrt(n))
+let df = n-1
+
+#ttab
+invcdf alpha1 ttab;
+T df.
+print t ttab
+
+if abs(t)>ttab
+note Reject H0. mu0 not equal 0
+else
+note Fail to Reject H0. mu0 equal 0
+endif
+
+#pvalue
+let t = abs(t)
+cdf t p;
+T df.
+let pvalue = 2*(1-p)
+print pvalue alpha
+
+if (pvalue < alpha)
+note Reject H0. mu0 not equal 0
+else
+note Fail to Reject H0. mu0 equal 0
+endif
+
+#CI
+let BB = dbar - ttab*(sd/(sqrt(n)))
+let BA = dbar + ttab*(sd/(sqrt(n)))
+print BB BA
+
+if mu0>BA or mu0<BB
+note Reject H0. mu0 not equal 0
+else
+note Fail to Reject H0. mu0 equal 0
+endif
+
+endmacro

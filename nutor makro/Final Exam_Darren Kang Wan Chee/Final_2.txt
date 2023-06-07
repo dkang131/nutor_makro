@@ -1,0 +1,39 @@
+macro
+
+ztest x1 x2 n1 n2 alpha
+
+mconstant alpha x1 x2 n1 n2 p1 p2 p pvalue ztab z pp
+
+
+note H0 : p1 = p2
+note H1 : p1 > p2
+note p1 : residents of the city
+note p2 : residents around the city
+
+let p1 = x1/n1
+let p2 = x2/n2
+
+let p = (x1+x2)/(n1+n2)
+
+let z = (p1-p2)/(sqrt(p*(1-p)*((1/n1)+(1/n2))))
+
+let alpha = 1-(alpha)
+
+invcdf alpha ztab;
+normal 0 1.
+print z ztab
+
+let z = z
+cdf z pp;
+normal 0 1.
+let pvalue = (1-pp)
+print pvalue alpha
+
+if (pvalue < alpha)
+note Reject H0, proportion of city residents approve is higher than proportion of residents around the city
+else
+note Fail to Reject H0, proportion of city residents approve is not higher than proportion of residents around the city
+endif
+
+endmacro
+

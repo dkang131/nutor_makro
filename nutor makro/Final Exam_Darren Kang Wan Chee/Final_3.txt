@@ -1,0 +1,43 @@
+macro
+
+num3 x y z
+
+mconstant n xbar ybar zbar i sum cov
+mcolumn x y z x1 y1 z1 x11
+mmatrix mx1 mx2 mxcov mxicov
+
+note matrix X
+copy x y z mx1
+print mx1
+
+let n = count(x)
+let xbar = mean(x)
+let ybar = mean(y)
+let zbar = mean(z)
+print xbar ybar zbar
+
+do i = 1:n
+let x1(i) = i
+let x1(i) = (x(i)-xbar)
+let y1(i) = i
+let y1(i) = (y(i)-ybar)
+let z1(i) = i
+let z1(i) = (z(i)-zbar)
+enddo
+
+note matrix Y
+copy x1 y1 z1 mx2
+print mx2
+
+#covariance
+let sum = 0
+do i = 1:n
+let x11(i) = i
+let x11(i) = (x1(i)*y1(i)*z1(i))
+let sum = sum+x11(i)
+enddo
+print x11
+let cov = sum/(n-1)
+print cov
+
+endmacro

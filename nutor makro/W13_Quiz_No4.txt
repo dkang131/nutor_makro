@@ -1,0 +1,39 @@
+macro
+
+covariance x y z
+
+mconstant n xbar ybar zbar i covxx covyy covzz covxy covxz covyz
+mcolumn x y z
+
+note Hydrogen = x
+note Porosity = y
+note Strength = z
+
+let n = count(x)
+let xbar = mean(x)
+let ybar = mean(y)
+let zbar = mean(z)
+
+let covxx = 0
+let covyy = 0
+let covzz = 0
+let covxy = 0
+let covxz = 0
+let covyz = 0
+do i = 1:n
+let covxx = covxx+(x(i)-xbar)^2
+let covyy = covyy+(y(i)-ybar)^2
+let covzz = covzz+(z(i)-zbar)^2
+let covxy = covxy+((x(i)-xbar)*(y(i)-ybar))
+let covxz = covxz+((x(i)-xbar)*(z(i)-zbar))
+let covyz = covyz+((y(i)-ybar)*(z(i)-zbar))
+enddo
+let covxx = covxx/(n-1)
+let covyy = covyy/(n-1)
+let covzz = covzz/(n-1)
+let covxy = covxy/(n-1)
+let covxz = covxz/(n-1)
+let covyz = covyz/(n-1)
+print covxx covyy covzz covxy covxz covyz
+
+endmacro

@@ -1,0 +1,42 @@
+macro
+
+number2 x y x1 x2 p1 p2 alpha
+
+mconstant n1 n2 p1 p2 alpha alpha1 z p ztab pp x1 x2 pvalue
+mcolumn x y
+
+note Hypotesis:
+note H0 : p1 = p2
+note H1 : p1 <> p2
+
+let alpha1 = 1-(alpha/2)
+let n1 = sum(x)
+let n2 = sum(y)
+let p = (x1+x2)/(n1+n2)
+
+let z = (p1-p2)/(sqrt(p*(1-p)*((1/n1)+(1/n2))))
+
+invcdf alpha1 ztab;
+normal 0 1.
+print z ztab
+
+if abs(z) > ztab
+note Reject H0, p1 not equal p2
+else
+note Fail to Reject H0, p1 equal p2
+endif
+
+#pvalue
+let z = abs(z)
+cdf z pp;
+normal 0 1.
+let pvalue = 2*(1-pp)
+print pvalue alpha
+
+if (pvalue < alpha)
+note Reject H0, p1 not equal p2
+else
+note Fail to Reject H0, p1 equal p2
+endif
+
+endmacro
